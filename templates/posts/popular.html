@@ -1,0 +1,44 @@
+{% load hitcount_tags %}
+<html>
+    <head>
+        <title>Popular Posts</title>
+    </head>
+    <body>
+        {% if page_obj %}
+        <!-- Search -->
+        <div>
+            <form method="get">
+                <input type="text" placeholder="Search" name="q" value="{{ search_query }}">
+                <button>Search</button>
+            </form>
+        </div>
+        <!-- Post objects list -->
+        <div>
+            {% for post in page_obj %}        
+                <a href="{% url 'posts:post_detail' post.pk %}"><h2>{{ post.title }}</h2></a>
+                <p>Seen: {% get_hit_count for post %}</p>
+                <p>{{ post.text }}</p>
+                <p>Published at {{ post.publish_time }}</p>     
+                {% if post.picture %}
+                    <img src="{{ post.picture.url }}" alt="There is a image">
+                {% endif %}
+                <h4>{{ post.body }}</h4>
+            {% endfor %}
+        </div>
+        <!-- Pagination links -->
+        <div>
+            <span><a href="?page=1">First page</a></span>
+            {% if page_obj.has_previous %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></span>
+            {% endif %} 
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.number }}">{{ page_obj.number }}</a></span>
+            {% if page_obj.has_next %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></span>
+            {% endif %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.paginator.num_pages }}">Last page</a></span>
+        </div>
+        {% else %}
+        No posts found
+        {% endif %}
+    </body>
+</html>

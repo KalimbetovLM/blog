@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Posts List</title>
+    </head>
+    <body>
+        {% if page_obj %}
+            {% if messages %}
+            {% for message in messages %}
+            <h2>{{ message }}</h2>
+            {% endfor %}
+            {% endif %}
+            <h4><a href="{% url 'users:register' %}">register</a></h4> 
+            <h4><a href="{% url 'users:login' %}">login</a></h4>
+            {% if request.user.is_authenticated %}
+            <h4><a href="{% url 'users:logout' %}">logout</a></h4>
+            {% endif %}
+            <h4><a href="{% url 'posts:post_create' %}">create</a></h4>
+            <br>
+            <div>
+            <span><a href="{% url 'posts:weekend' %}">Weekend</a></span>  /
+            <span><a href="{% url 'posts:month' %}">Month</a></span>  /
+            <span><a href="{% url 'posts:recommended' %}">Recommended</a></span>  /
+            <span><a href="{% url 'posts:popular' %}">Popular</a></span>
+            </div> 
+            <hr>
+            <div>
+                <form class="d-flex" method="get">
+                    <input class="form-control" type="text" placeholder="Search" name="q" value="{{ search_query }}">
+                    <button class="btn btn-success">Search</button>
+                </form>
+            </div>      
+            {% for post in page_obj %}
+                {% if post.picture %}
+                    <img src="{{ post.picture.url }}" alt="There is a image">
+                {% endif %}
+            <a href="{% url 'posts:post_detail' post.pk %}"><h4>{{ post.title }}</h4></a>
+            <p>{{ post.text }}</p>
+            <p>{{ post.publish_time }}</p>
+            {% endfor %}
+            <span><a href="?page=1">First page</a></span>
+            {% if page_obj.has_previous %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></span>
+            {% endif %} 
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.number }}">{{ page_obj.number }}</a></span>
+            {% if page_obj.has_next %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></span>
+            {% endif %}
+            <span><a href="{% url 'posts:post_list' %}?page={{ page_obj.paginator.num_pages }}">Last page</a></span>
+        {% else %}
+        <h2>No posts found</h2>
+        {% endif %}
+    </body>
+</html>

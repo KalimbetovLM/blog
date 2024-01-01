@@ -1,0 +1,24 @@
+{% load hitcount_tags %}
+<html>
+    <head>
+        <title>{{ post.title }}</title>
+    </head>
+    <body>
+        <h4>{{ post.title }}</h4>        
+        <h4>Seen: {% get_hit_count for  post %}</h4>
+        {% if post.picture %}
+            <img src="{{ post.picture.url }}" alt="There is a image">
+        {% endif %}
+        <h5>{{ post.text }}</h5>
+        <form method="post">{% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+        <div>
+        {% for comment in comments %}
+        <h4>{{ comment.author.username }}</h4>
+        <h6>{{ comment.text }}</h6>
+        {% endfor %}
+        </div>
+    </body>
+</html>
